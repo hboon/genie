@@ -1,0 +1,172 @@
+#!/usr/bin/env ruby
+
+require 'rubygems'
+require 'commander/import'
+require 'fileutils'
+require 'psych'
+
+APP_NAME = 'genie'
+HELP_STRING = "Create commands bound to directories. E.g. create a `push` command 
+that, depending on which directory you are in, run the correct git 
+push command.
+
+----------
+
+You can either create the command and config file 
+semi-automatically:
+
+1. Run:
+
+  $ #{APP_NAME} create <command>
+
+This will create a YAML file `~/.config/#{APP_NAME}/<command>.yml` 
+and the command (a softlink) in the current directory.
+  
+2. Move this softlink to a directory in your $PATH so that you can 
+run the command anywhere.
+
+  $ mv <command> /some/directory/included/in/path/
+
+----------
+
+Alternatively, you can create them manually:
+
+1. Figure out where `#{APP_NAME}` is installed.
+
+  $ which #{APP_NAME}
+
+2. Create a softlink to `#{APP_NAME}` with a sensible name and make 
+sure this softlink is in your $PATH. This will be your new command 
+e.g.
+
+    $ ln -s /full/path/to/#{APP_NAME}/from/step1 push
+
+3. Create a YAML configuration file matching the softlink in your 
+user directory's `.config/#{APP_NAME}/` directory. e.g. For the 
+command called `push`, you would create 
+`~/.config/#{APP_NAME}/push.yml`.
+
+Contents for the YAML file are key-value mappings from a directory 
+path to the command to be ran in that directory (and its 
+subdirectories):
+
+    ---
+    /Users/hboon/code/piggyalarm: git push bb master
+    /Users/hboon/code/simplymeta: hub push bb,deploy master
+    ~/code/ligify: git push bb master
+
+---
+
+Either way, update the configuration file at 
+`~/.config/#{APP_NAME}/<command>.yml` with the commands for each 
+directory.
+"
+TICK_CHAR = "\u2713"
+
+program :version, '0.0.1'
+program :description, HELP_STRING
+
+script_name = File.basename(__FILE__)
+
+if script_name == APP_NAME
+  default_command :create
+else
+  default_command :run
+end
+
+def config_path(cmd)
+  File.expand_path("~/.config/#{APP_NAME}/#{cmd}.yml")
+end
+
+if script_name != APP_NAME
+  cmd_config_path = config_path(script_name)
+  command :run do |c|
+    c.syntax = "#{script_name}"
+    c.summary = "Run a command from #{cmd_config_path} that matches the current directory"
+    c.description = "Run a command from #{cmd_config_path} that matches the current directory"
+    c.example 'Run command', "$ #{script_name}"
+    c.action do |args, options|
+      #Careful, say doesn't return true-ish
+      if (script_name == APP_NAME && (args.nil? || args.empty?))
+        say HELP_STRING
+        abort
+      end
+      say_error "Specify the name of the new command you want to create:
+
+      #{APP_NAME} create <command>
+  " and abort if script_name == APP_NAME
+      File.open(cmd_config_path) do |f|
+        mapping = Psych.load(f.read)
+        mapping = Hash[mapping.map{|k,v|[k.chomp('/'), v]}]
+        dir = Dir.pwd
+        found = dir_matching(mapping.keys, dir)
+        cmd = mapping[found]
+        if cmd && !cmd.empty?
+          say "Running: #{cmd}"
+          `#{cmd}`
+        else
+          say_error "No matching command found for `#{dir}`."
+        end
+      end
+    end
+  end
+end
+
+if script_name == APP_NAME
+  command :create do |c|
+    c.syntax = "#{script_name}"
+    c.summary = "Create a command"
+    c.description = "Create a command"
+    c.example 'Create command', "$ #{APP_NAME} create <command>"
+    c.action do |args, options|
+      say_error "Specify the name of the new command you want to create:
+
+    #{APP_NAME} create <command>
+" and abort if args.nil? || args.empty?
+      new_cmd = args[0]
+      say_error "I don't think you want to do that." and abort if new_cmd == APP_NAME
+      cmd_config_path = config_path(new_cmd)
+      config_dir = File.dirname(cmd_config_path)
+      say_error "A file with the same name as the command/softlink `#{new_cmd}` already exist." and abort if File.file? new_cmd
+      say_error "Configuration file `#{cmd_config_path}` already exist." and abort if File.file? cmd_config_path
+      create_configuration_file(new_cmd, config_dir)
+      create_command(new_cmd)
+    end
+  end
+end
+
+def dir_matching(dirs, dir)
+  found = dirs.find {|e|e == dir || File.expand_path(e) == dir}
+  if found
+    found
+  else
+    dir = File.expand_path('..', dir)
+    if dir == '/'
+      nil
+    else
+      dir_matching(dirs, dir)
+    end
+  end
+end
+
+def genie_abs_path
+  @genie_abs_path ||= `which genie`.chomp
+end
+
+def create_configuration_file(new_cmd, config_dir)
+  dir = Dir.pwd
+  contents = "#{dir}: ENTER_YOUR_COMMAND_HERE
+/another_directory_path: ENTER_ANOTHER_COMMAND
+/yet_another_directory_path: AND_ANOTHER_COMMAND
+~/some_dir: AND_ANOTHER_COMMAND"
+  cmd_config_path = config_path(new_cmd)
+  FileUtils.mkdir_p(config_dir) unless File.directory? config_dir
+  File.open(cmd_config_path, 'w') {|f| f.write(contents)}
+  say "#{TICK_CHAR} Configuration file `#{cmd_config_path}` created."
+end
+
+def create_command(new_cmd)
+  `ln -s #{genie_abs_path} #{new_cmd}`
+  say "#{TICK_CHAR} New command (softlink) `#{new_cmd}` created by genie."
+  say "TODO: You should move `#{new_cmd}` to a directory included in your $PATH so you can use it anywhere."
+end
