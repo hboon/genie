@@ -63,7 +63,7 @@ directory.
 "
 TICK_CHAR = "\u2713"
 
-program :version, '0.0.1'
+program :version, '0.0.2'
 program :description, HELP_STRING
 
 script_name = File.basename($PROGRAM_NAME)
