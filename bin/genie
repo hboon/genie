@@ -111,6 +111,26 @@ if script_name != APP_NAME
       end
     end
   end
+  command :show do |c|
+    c.syntax = "#{script_name}"
+    c.summary = "Show the command to run, from #{cmd_config_path} that matches the current directory"
+    c.description = c.summary
+    c.example 'Show command', "$ #{script_name}"
+    c.action do |args, options|
+      File.open(cmd_config_path) do |f|
+        mapping = Psych.load(f.read)
+        mapping = Hash[mapping.map{|k,v|[k.chomp('/'), v]}]
+        dir = Dir.pwd
+        found = dir_matching(mapping.keys, dir)
+        cmd = mapping[found]
+        if cmd && !cmd.empty?
+          say "#{cmd}"
+        else
+          say_error "No matching command found for `#{dir}`."
+        end
+      end
+    end
+  end
 end
 
 if script_name == APP_NAME
