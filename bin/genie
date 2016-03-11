@@ -4,6 +4,7 @@ require 'rubygems'
 require 'commander/import'
 require 'fileutils'
 require 'psych'
+require 'genie'
 
 APP_NAME = 'genie'
 HELP_STRING = "Create commands bound to directories. E.g. create a `push` command 
@@ -63,7 +64,7 @@ directory.
 "
 TICK_CHAR = "\u2713"
 
-program :version, '0.0.2'
+program :version, CommandGenie::VERSION
 program :description, HELP_STRING
 
 script_name = File.basename($PROGRAM_NAME)
