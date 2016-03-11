@@ -96,7 +96,7 @@ if script_name != APP_NAME
           say "Running: #{cmd}"
           `#{cmd}`
         else
-          say_error "No matching command found for `#{dir}`."
+          say_error "No matching command found for `#{Dir.pwd}`."
         end
       end
     end
@@ -111,7 +111,7 @@ if script_name != APP_NAME
         if cmd && !cmd.empty?
           say "#{cmd}"
         else
-          say_error "No matching command found for `#{dir}`."
+          say_error "No matching command found for `#{Dir.pwd}`."
         end
       end
     end
