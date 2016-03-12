@@ -116,6 +116,19 @@ if script_name != APP_NAME
       end
     end
   end
+  command :edit do |c|
+    c.syntax = "#{script_name}"
+    c.summary = "Edit the command's configuration file #{cmd_config_path}"
+    c.description = c.summary
+    c.example 'Edit command configuration file for ', "$ #{script_name}"
+    c.action do |args, options|
+      if File.file? cmd_config_path
+        `open #{cmd_config_path}`
+      else
+        say_error "No configuration file found at `#{cmd_config_path}`."
+      end
+    end
+  end
 end
 
 if script_name == APP_NAME
