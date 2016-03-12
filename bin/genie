@@ -174,7 +174,8 @@ end
 
 def create_configuration_file(new_cmd, config_dir)
   dir = Dir.pwd
-  contents = "#{dir}: ENTER_YOUR_COMMAND_HERE
+  contents = "---
+#{dir}: ENTER_YOUR_COMMAND_HERE
 /another_directory_path: ENTER_ANOTHER_COMMAND
 /yet_another_directory_path: AND_ANOTHER_COMMAND
 ~/some_dir: AND_ANOTHER_COMMAND"
