@@ -66,6 +66,7 @@ TICK_CHAR = "\u2713"
 
 program :version, CommandGenie::VERSION
 program :description, HELP_STRING
+program :help, 'Author', 'Hwee-Boon Yar <hboon@motionobj.com>'
 
 script_name = File.basename($PROGRAM_NAME)
 
