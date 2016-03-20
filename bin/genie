@@ -142,6 +142,10 @@ if script_name == APP_NAME
       say_error "Specify the name of the new command you want to create:
 
     #{APP_NAME} create <command>
+
+or for help:
+
+    #{APP_NAME} --help
 " and abort if args.nil? || args.empty?
       new_cmd = args[0]
       say_error "I don't think you want to do that." and abort if new_cmd == APP_NAME
