@@ -6,7 +6,8 @@ A good example is when pushing code, we might run `git push origin master` for o
 
 `genie` lets you create commands that are bound to directories. In our example, we can create a `push` command that, depending on which directory we run it in, invoke the correct push command.
 
-[![Gem Version](https://badge.fury.io/rb/command-genie.svg)](http://badge.fury.io/rb/ruby_motion_query)
+[![Gem Version](https://badge.fury.io/rb/command-genie.svg)](https://badge.fury.io/rb/command-genie)
+![License](https://img.shields.io/github/license/hboon/boom.svg)
 
 Usage
 ---
