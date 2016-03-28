@@ -160,7 +160,7 @@ or for help:
 end
 
 def dir_matching(dirs, dir)
-  found = dirs.find {|e|e == dir || File.expand_path(e) == dir}
+  found = dirs.find {|e| e == dir || File.realpath(File.expand_path(e)) == dir }
   if found
     found
   else
