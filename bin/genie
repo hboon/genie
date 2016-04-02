@@ -83,10 +83,10 @@ end
 if script_name != APP_NAME
   cmd_config_path = config_path(script_name)
   command :run do |c|
-    c.syntax = "#{script_name}"
+    c.syntax = "#{script_name} [run]"
     c.summary = "Run a command from #{cmd_config_path} that matches the current directory"
     c.description = "Run a command from #{cmd_config_path} that matches the current directory"
-    c.example 'Run command', "$ #{script_name}"
+    c.example 'Run command', c.syntax
     c.action do |args, options|
       with_command(script_name) do |cmd|
         if cmd && !cmd.empty?
@@ -99,10 +99,10 @@ if script_name != APP_NAME
     end
   end
   command :show do |c|
-    c.syntax = "#{script_name}"
+    c.syntax = "#{script_name} show"
     c.summary = "Show the command to run, from #{cmd_config_path} that matches the current directory"
     c.description = c.summary
-    c.example 'Show command', "$ #{script_name}"
+    c.example 'Show command', c.syntax
     c.action do |args, options|
       with_command(script_name) do |cmd|
         if cmd && !cmd.empty?
@@ -114,10 +114,10 @@ if script_name != APP_NAME
     end
   end
   command :edit do |c|
-    c.syntax = "#{script_name}"
+    c.syntax = "#{script_name} edit"
     c.summary = "Edit the command's configuration file #{cmd_config_path}"
     c.description = c.summary
-    c.example 'Edit command configuration file for ', "$ #{script_name}"
+    c.example 'Edit command configuration file for ', c.syntax
     c.action do |args, options|
       if File.file? cmd_config_path
         `open #{cmd_config_path}`
@@ -130,14 +130,14 @@ end
 
 if script_name == APP_NAME
   command :create do |c|
-    c.syntax = "#{script_name}"
+    c.syntax = "#{APP_NAME} create <command>"
     c.summary = "Create a command"
     c.description = "Create a command"
-    c.example 'Create command', "$ #{APP_NAME} create <command>"
+    c.example 'Create command', c.syntax
     c.action do |args, options|
       say_error "Specify the name of the new command you want to create:
 
-    #{APP_NAME} create <command>
+    #{c.syntax}
 
 or for help:
 
