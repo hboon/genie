@@ -88,10 +88,6 @@ if script_name != APP_NAME
     c.description = "Run a command from #{cmd_config_path} that matches the current directory"
     c.example 'Run command', "$ #{script_name}"
     c.action do |args, options|
-      say_error "Specify the name of the new command you want to create:
-
-      #{APP_NAME} create <command>
-  " and abort if script_name == APP_NAME
       with_command(script_name) do |cmd|
         if cmd && !cmd.empty?
           say "Running: #{cmd}"
