@@ -61,6 +61,9 @@ subdirectories):
 Either way, update the configuration file at 
 `~/.config/#{APP_NAME}/<command>.yml` with the commands for each 
 directory.
+
+You can run `<command> edit` (e.g. `push edit`) to edit the command's configuration file in the default editor.
+---
 "
 TICK_CHAR = "\u2713"
 
