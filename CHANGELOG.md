@@ -1,8 +1,11 @@
 genie Changelog
 ===
 
-v0.3.0
+v0.3.1, v0.3.0
 ---
+* Add CHANGELOG
+* Update help to mention `<command> edit`
+* Tweak help text. Also reduce redundancy
 * Match softlinks correctly
 * Add license badge and fix gem version badge link
 * Add gem version badge to README
