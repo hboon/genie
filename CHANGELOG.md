@@ -1,7 +1,7 @@
 genie Changelog
 ===
 
-v0.3.1, v0.3.0
+v0.3.2, v0.3.1, v0.3.0
 ---
 * Add CHANGELOG
 * Update help to mention `<command> edit`
@@ -11,6 +11,7 @@ v0.3.1, v0.3.0
 * Add gem version badge to README
 * Improve instructions when only `genie` is typed
 * Add author name
+* Ignore invalid directories, continue processing
 
 v0.2.1, v0.2.0
 ---
