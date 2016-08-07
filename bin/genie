@@ -159,7 +159,15 @@ or for help:
 end
 
 def dir_matching(dirs, dir)
-  found = dirs.find {|e| e == dir || File.realpath(File.expand_path(e)) == dir }
+  found = dirs.find do |e|
+    matched = begin
+              File.realpath(File.expand_path(e)) == dir 
+            rescue Errno::ENOENT => err
+              say_error "Path does not exist: #{File.expand_path(e)}"
+              false
+            end
+    e == dir || matched
+  end
   if found
     found
   else
