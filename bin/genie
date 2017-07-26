@@ -94,7 +94,7 @@ if script_name != APP_NAME
       with_command(script_name) do |cmd|
         if cmd && !cmd.empty?
           say "Running: #{cmd}"
-          `#{cmd}`
+          puts `#{cmd}`
         else
           say_error "No matching command found for `#{Dir.pwd}`."
         end
